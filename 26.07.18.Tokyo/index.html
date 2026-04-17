@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>東京旅遊計畫 7/18–7/25</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+    background: #fdf6f0;
+    color: #2d2d2d;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .site-header {
+    background: linear-gradient(135deg, #c0392b 0%, #96281b 100%);
+    color: white;
+    padding: 24px 20px 0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  }
+  .header-top {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .header-top h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .header-top .subtitle {
+    font-size: 0.875rem;
+    opacity: 0.85;
+    margin-top: 2px;
+  }
+  .torii { font-size: 2rem; }
+
+  /* Tabs */
+  .tabs {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: rgba(255,255,255,0.8);
+    padding: 10px 16px 12px;
+    cursor: pointer;
+    border-radius: 6px 6px 0 0;
+    font-size: 0.78rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    text-align: center;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { background: rgba(255,255,255,0.25); color: white; }
+  .tab-btn.active {
+    background: #fdf6f0;
+    color: #c0392b;
+    font-weight: 700;
+    border-bottom: 3px solid #fdf6f0;
+  }
+  .tab-btn .day-num { font-size: 0.65rem; opacity: 0.8; display: block; }
+  .tab-btn .day-label { font-size: 0.82rem; display: block; }
+
+  /* Content */
+  .content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+  }
+
+  .day-panel { display: none; }
+  .day-panel.active { display: block; }
+
+  .day-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #c0392b;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e8d5d0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e8d5d0;
+  }
+
+  .event {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .event::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 14px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #c0392b;
+    border: 2px solid #fdf6f0;
+    z-index: 1;
+  }
+
+  .card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    overflow: hidden;
+    border-left: 4px solid #ccc;
+    transition: box-shadow 0.2s;
+  }
+  .card:hover { box-shadow: 0 3px 14px rgba(0,0,0,0.12); }
+
+  .card.transport { border-left-color: #3498db; }
+  .card.food      { border-left-color: #e67e22; }
+  .card.shopping  { border-left-color: #8e44ad; }
+  .card.attraction{ border-left-color: #27ae60; }
+  .card.hotel     { border-left-color: #16a085; }
+
+  .card-inner { padding: 12px 16px; }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .time-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: #f0ebe8;
+    color: #7a5a50;
+    padding: 2px 7px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .type-icon { font-size: 1rem; }
+  .card-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #2d2d2d;
+  }
+
+  .card-body {
+    font-size: 0.85rem;
+    color: #555;
+    line-height: 1.7;
+  }
+
+  /* Links */
+  .card-body a, .link-list a {
+    color: #c0392b;
+    text-decoration: none;
+    border-bottom: 1px solid #e8b8b2;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .card-body a:hover, .link-list a:hover {
+    color: #96281b;
+    border-bottom-color: #96281b;
+  }
+
+  .link-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .link-pill {
+    display: inline-block;
+    font-size: 0.78rem;
+    background: #fdf6f0;
+    border: 1px solid #e8d5d0;
+    border-radius: 20px;
+    padding: 3px 10px;
+    color: #c0392b !important;
+    text-decoration: none !important;
+    border-bottom: 1px solid #e8d5d0 !important;
+    transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .link-pill:hover {
+    background: #f5e6e0 !important;
+    border-color: #c0392b !important;
+    color: #96281b !important;
+  }
+  .link-pill.ticket {
+    background: #eaf4fb;
+    border-color: #aed6f1;
+    color: #2471a3 !important;
+  }
+  .link-pill.ticket:hover {
+    background: #d6eaf8 !important;
+    border-color: #2471a3 !important;
+    color: #1a5276 !important;
+  }
+  .link-pill.reserve {
+    background: #fef9e7;
+    border-color: #f7dc6f;
+    color: #9a7d0a !important;
+  }
+  .link-pill.reserve:hover {
+    background: #fdebd0 !important;
+    border-color: #e59866 !important;
+    color: #784212 !important;
+  }
+
+  .note {
+    font-size: 0.78rem;
+    color: #888;
+    font-style: italic;
+    margin-top: 4px;
+  }
+
+  /* Section dividers within a card */
+  .sub-section {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed #eee;
+  }
+  .sub-label {
+    font-size: 0.73rem;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+
+  /* Flight card special */
+  .flight-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+    flex-wrap: wrap;
+  }
+  .flight-city { font-weight: 700; font-size: 1rem; }
+  .flight-time { font-size: 0.82rem; color: #888; }
+  .flight-arrow { color: #c0392b; font-size: 1.2rem; }
+  .flight-num {
+    font-size: 0.75rem;
+    background: #e8f4fd;
+    color: #2471a3;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    font-size: 0.78rem;
+    color: #777;
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+
+  @media (max-width: 600px) {
+    .site-header { padding: 16px 12px 0; }
+    .header-top h1 { font-size: 1.2rem; }
+    .tab-btn { padding: 8px 10px 10px; font-size: 0.72rem; }
+    .content { padding: 20px 12px 40px; }
+    .flight-row { gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-top">
+    <span class="torii">⛩️</span>
+    <div>
+      <h1>東京旅遊計畫</h1>
+      <div class="subtitle">2025年 7月18日（六）〜 7月25日（六）· 8天7夜</div>
+    </div>
+  </div>
+  <nav class="tabs" role="tablist">
+    <button class="tab-btn active" onclick="showDay(0)" role="tab">
+      <span class="day-num">Day 1</span>
+      <span class="day-label">7/18 六</span>
+    </button>
+    <button class="tab-btn" onclick="showDay(1)" role="tab">
+      <span class="day-num">Day 2</span>
+      <span class="day-label">7/19 日</span>
+    </button>
+    <button class="tab-btn" onclick="showDay(2)" role="tab">
+      <span class="day-num">Day 3</span>
+      <span class="day-label">7/20 一</span>
+    </button>
+    <button class="tab-btn" onclick="showDay(3)" role="tab">
+      <span class="day-num">Day 4</span>
+      <span class="day-label">7/21 二 🎡</span>
+    </button>
+    <button class="tab-btn" onclick="showDay(4)" role="tab">
+      <span class="day-num">Day 5</span>
+      <span class="day-label">7/22 三 🐭</span>
+    </button>
+    <button class="tab-btn" onclick="showDay(5)" role="tab">
+      <span class="day-num">Day 6</span>
+      <span class="day-label">7/23 四 🗼</span>
+    </button>
+    <button class="tab-btn" onclick="showDay(6)" role="tab">
+      <span class="day-num">Day 7</span>
+      <span class="day-label">7/24 五</span>
+    </button>
+    <button class="tab-btn" onclick="showDay(7)" role="tab">
+      <span class="day-num">Day 8</span>
+      <span class="day-label">7/25 六 ✈️</span>
+    </button>
+  </nav>
+</header>
+
+<main class="content">
+
+  <!-- Legend -->
+  <div class="legend">
+    <span class="legend-item"><span class="legend-dot" style="background:#3498db"></span>交通</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#e67e22"></span>餐飲</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#8e44ad"></span>購物</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#27ae60"></span>景點／遊樂</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#16a085"></span>住宿</span>
+  </div>
+
+  <!-- ===== DAY 1 ===== -->
+  <div class="day-panel active" id="day-0">
+    <div class="day-title">📅 7月18日（六）— 抵達東京・丸之內</div>
+    <div class="timeline">
+
+      <div class="event">
+        <div class="card transport">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">08:30</span>
+              <span class="type-icon">✈️</span>
+              <span class="card-title">出發航班 JX800</span>
+            </div>
+            <div class="card-body">
+              <div class="flight-row">
+                <span><span class="flight-city">台北松山 T1</span><br><span class="flight-time">08:30 起飛</span></span>
+                <span class="flight-arrow">→</span>
+                <span><span class="flight-city">東京成田 T2</span><br><span class="flight-time">12:55 抵達</span></span>
+                <span class="flight-num">JX800</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card hotel">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">check-in</span>
+              <span class="type-icon">🏨</span>
+              <span class="card-title">Super Hotel Premier Tokyo Station Yaesu Central Exit</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card attraction">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">17:00</span>
+              <span class="type-icon">🏙️</span>
+              <span class="card-title">丸之內散策</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill" href="https://maps.app.goo.gl/ytf9tw1QbfCyryJD8" target="_blank" rel="noopener">丸之內仲通</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/jwuVBxkk24FaZMo39" target="_blank" rel="noopener">三菱一號館美術館</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/tHJCJsJLgvi4hk7B9" target="_blank" rel="noopener">東京國際論壇</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card food">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">18:00</span>
+              <span class="type-icon">🍔</span>
+              <span class="card-title">晚餐與飲品</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill" href="https://maps.app.goo.gl/FLC35tWDw7YCL1Ay9" target="_blank" rel="noopener">SHAKE SHACK</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/ZtrmibJgCb53KsVr8" target="_blank" rel="noopener">Marunouchi Happiness Stand &amp; Gallery</a>
+                <a class="link-pill" href="https://www.google.com/maps?cid=16385946257055618233" target="_blank" rel="noopener">茶寮都路里</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card shopping">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="type-icon">🛍️</span>
+              <span class="card-title">八重洲地下街</span>
+            </div>
+            <div class="card-body">
+              <a href="https://drive.google.com/file/d/1BuIlZsl3qsM0gcIVG4JBRwmA-IAJOtFF/view?usp=sharing" target="_blank" rel="noopener">📄 地下街地圖</a>
+              <div class="link-list">
+                <a class="link-pill" href="https://maps.app.goo.gl/Z1xrRvGwkXyWxcYZ6" target="_blank" rel="noopener">Standard Products #31</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/LBVmFA3CfdhskiLE8" target="_blank" rel="noopener">3COINS #72</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card shopping">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="type-icon">🛍️</span>
+              <span class="card-title">東京一番街</span>
+            </div>
+            <div class="card-body">
+              <a href="https://drive.google.com/file/d/1-Owl9TNRw-e3QhPjv4B13I8s7x3Y_Qpl/view?usp=sharing" target="_blank" rel="noopener">📄 一番街地圖</a>
+              <div class="link-list">
+                <a class="link-pill" href="https://maps.app.goo.gl/egSxHkBHNb9uo2xM8" target="_blank" rel="noopener">DRAGON BALL（八重洲北口1F）10:00–20:30</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/K9uPjcMWvLzrzFk79" target="_blank" rel="noopener">Butter Butler #3</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/amH1GkpLEGczZLmv8" target="_blank" rel="noopener">Brulee Merize #9</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/WJnzw5rNeeuJHLHC6" target="_blank" rel="noopener">C-cube TIRAMISÙ #22</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/oS5GbeRTJ61W5RGk8" target="_blank" rel="noopener">PISTA &amp; TOKYO #31</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/NMJFYGFWELNjjMRA7" target="_blank" rel="noopener">ALmOND TOKYO #38</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card shopping">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="type-icon">👜</span>
+              <span class="card-title">PORTER 門市</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill" href="https://maps.app.goo.gl/mj77d1ySwCaXhDQi6" target="_blank" rel="noopener">PORTER 東京店 11:00–21:00</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/SMqNk7UCYzckMyGp8" target="_blank" rel="noopener">PORTER 丸之內店 11:00–21:00</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== DAY 2 ===== -->
+  <div class="day-panel" id="day-1">
+    <div class="day-title">📅 7月19日（日）— 銀座購物</div>
+    <div class="timeline">
+
+      <div class="event">
+        <div class="card food">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">10:00</span>
+              <span class="type-icon">🍞</span>
+              <span class="card-title">早餐</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill" href="https://www.google.com/maps?cid=1261986758159638453" target="_blank" rel="noopener">木村家</a>
+                <a class="link-pill reserve" href="https://drive.google.com/file/d/1eohh8YK-h4Yy4dxsnDBoXyudOl34GA1I/view?usp=sharing" target="_blank" rel="noopener">📋 菜單</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card shopping">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">11:00</span>
+              <span class="type-icon">🛍️</span>
+              <span class="card-title">銀座購物</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill" href="https://maps.app.goo.gl/2n5tTjZ6dUd6kdNT6" target="_blank" rel="noopener">DAISO（食物模型／洗澡球）</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/WmkTATfHGKQe9cCk9" target="_blank" rel="noopener">Uniqlo</a>
+                <a class="link-pill" href="https://www.google.com/maps?cid=771702428473144825" target="_blank" rel="noopener">MUJI</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/AHb88GSzTUGbQzSj9" target="_blank" rel="noopener">Loft</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/Tx9tuD6kH9jApB6t7" target="_blank" rel="noopener">宜得利</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/ZK7SbVQxiCFRetVN9" target="_blank" rel="noopener">C-pla Premium</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/7EYLHV9MupFBW7St6" target="_blank" rel="noopener">Global Work</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card food">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">13:00</span>
+              <span class="type-icon">🍽️</span>
+              <span class="card-title">午餐與飲品</span>
+            </div>
+            <div class="card-body">
+              <div class="sub-section">
+                <div class="sub-label">午餐選擇</div>
+                <div class="link-list">
+                  <a class="link-pill" href="https://maps.app.goo.gl/auRvFoqUCi9L5CVn7" target="_blank" rel="noopener">Age.3</a>
+                  <a class="link-pill" href="https://maps.app.goo.gl/3EwA9RqexWhAQdBX9" target="_blank" rel="noopener">PATISSERIE TEN&amp;</a>
+                  <a class="link-pill reserve" href="https://www.tablecheck.com/ja/shops/patisserie-ten-okuroji/reserve" target="_blank" rel="noopener">🗓 預訂</a>
+                </div>
+              </div>
+              <div class="sub-section">
+                <div class="sub-label">飲料</div>
+                <div class="link-list">
+                  <a class="link-pill" href="https://maps.app.goo.gl/JZSM7AxzsTgKWcAP6" target="_blank" rel="noopener">神乃咖啡</a>
+                  <a class="link-pill" href="https://www.google.com/maps?cid=9301737868646870783" target="_blank" rel="noopener">BONGEN COFFEE</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card shopping">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">14:00</span>
+              <span class="type-icon">🧸</span>
+              <span class="card-title">GINZA SIX 商圈</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill" href="https://www.google.com/maps?cid=15576708788006522373" target="_blank" rel="noopener">博品館 TOY PARK</a>
+                <a class="link-pill" href="https://www.google.com/maps?cid=14973065113911757308" target="_blank" rel="noopener">GINZA SIX</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/UyXgkH8BZ41TFpecA" target="_blank" rel="noopener">藍瓶咖啡 B2</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/fHYmEoWsdT1S3Ywf6" target="_blank" rel="noopener">中村藤吉 4F</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card food">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">18:00</span>
+              <span class="type-icon">🍣</span>
+              <span class="card-title">晚餐</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill" href="https://www.google.com/maps?cid=9388171910175296388" target="_blank" rel="noopener">くら寿司</a>
+                <a class="link-pill reserve" href="https://reservation.kurasushi.co.jp/shops?shopId=188112&utm_source=gbp&utm_medium=gbp&utm_campaign=gbp" target="_blank" rel="noopener">🗓 線上預約</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== DAY 3 ===== -->
+  <div class="day-panel" id="day-2">
+    <div class="day-title">📅 7月20日（一）— 銀座深度逛</div>
+    <div class="timeline">
+
+      <div class="event">
+        <div class="card food">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">11:00</span>
+              <span class="type-icon">🥩</span>
+              <span class="card-title">午餐：敘敘院</span>
+            </div>
+            <div class="card-body">
+              <div class="sub-section">
+                <div class="sub-label">銀座三越店</div>
+                <div class="link-list">
+                  <a class="link-pill" href="https://maps.app.goo.gl/1hi4SASwunAfiJoF6" target="_blank" rel="noopener">地圖</a>
+                  <a class="link-pill reserve" href="https://booking.resty.jp/webrsv/search/s014005101/25539?language=zh-Hans" target="_blank" rel="noopener">🗓 預約</a>
+                </div>
+              </div>
+              <div class="sub-section">
+                <div class="sub-label">銀座 Corridor 店</div>
+                <div class="link-list">
+                  <a class="link-pill" href="https://maps.app.goo.gl/CNquWnwgbdXj2bBQ7" target="_blank" rel="noopener">地圖</a>
+                  <a class="link-pill reserve" href="https://booking.resty.jp/webrsv/search/s014005101/2892?isfixshop=true&language=zh-Hans" target="_blank" rel="noopener">🗓 預約</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card shopping">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">14:00</span>
+              <span class="type-icon">🛍️</span>
+              <span class="card-title">銀座購物街</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill" href="https://maps.app.goo.gl/cCYosazSfJXQECR46" target="_blank" rel="noopener">TOKYO PLAZA</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/v4qbZDmfXYrAoFLX8" target="_blank" rel="noopener">Ginza Wako</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/cY3fwkRSUq6h6DWr8" target="_blank" rel="noopener">松屋銀座</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/pxenvaE25ZWfEqx67" target="_blank" rel="noopener">NISHI GINZA</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/f1Lst6RhXNevkN9E9" target="_blank" rel="noopener">Samsonite</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/bh5zNcKYhd93stnb9" target="_blank" rel="noopener">BEAMS</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/QDifxPp6ncWmUs5L8" target="_blank" rel="noopener">今治毛巾</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card shopping">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">16:00</span>
+              <span class="type-icon">👜</span>
+              <span class="card-title">PORTER 門市</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill" href="https://maps.app.goo.gl/JBHYpJVCYLEP23hS8" target="_blank" rel="noopener">PORTER 銀座店 11:00–20:00</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/fHtda5uCCiLVBmX98" target="_blank" rel="noopener">PORTER CLASSIC 銀座 12:00–20:00</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card food">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">17:00</span>
+              <span class="type-icon">🥐</span>
+              <span class="card-title">下午點心</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill" href="https://maps.app.goo.gl/Um576FeicbziPsrw5" target="_blank" rel="noopener">塩麵包屋 pain·maison（–19:00）</a>
+                <a class="link-pill reserve" href="https://shiopan-maison.com/" target="_blank" rel="noopener">🔢 線上抽號碼牌</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/JZW7hRNC4o56vYTh8" target="_blank" rel="noopener">ROAR COFFEE（–18:30）</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== DAY 4 ===== -->
+  <div class="day-panel" id="day-3">
+    <div class="day-title">📅 7月21日（二）— 西武園遊樂園 🎡</div>
+    <div class="timeline">
+
+      <div class="event">
+        <div class="card food">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">08:00</span>
+              <span class="type-icon">🥐</span>
+              <span class="card-title">早餐</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill" href="https://maps.app.goo.gl/ExC6gWGEbt5j388Z6" target="_blank" rel="noopener">THE CITY BAKERY（鹹可頌）</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card attraction">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">10:00</span>
+              <span class="type-icon">🎡</span>
+              <span class="card-title">西武園遊樂園</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill" href="https://www.seibuen-amusement-park.jp/" target="_blank" rel="noopener">🌐 官方網站</a>
+                <a class="link-pill ticket" href="https://www.kkday.com/zh-tw/product/574722?qs=%E8%A5%BF%E6%AD%A6%E5%9C%92%E9%81%8A%E6%A8%82%E5%9C%92" target="_blank" rel="noopener">🎟 KKday 票券</a>
+                <a class="link-pill ticket" href="https://www.klook.com/zh-TW/activity/41317-seibuen-amusement-park-ticket/" target="_blank" rel="noopener">🎟 Klook 票券</a>
+              </div>
+              <div class="sub-section">
+                <div class="sub-label">推薦設施</div>
+                旋轉木馬 #4 · 小火車駕駛 #6 · 夕陽號列車 #10 · 吉普車 #13
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card attraction">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">14:00</span>
+              <span class="type-icon">🦖</span>
+              <span class="card-title">哥吉拉電影</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card food">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">18:00</span>
+              <span class="type-icon">🍚</span>
+              <span class="card-title">晚餐（八重洲地下街）</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill" href="https://maps.app.goo.gl/sZcnsiCNFbphFd5UA" target="_blank" rel="noopener">だし茶漬けえん</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/DdGX9dKomodyhLXB7" target="_blank" rel="noopener">根岸牛舌 #13</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== DAY 5 ===== -->
+  <div class="day-panel" id="day-4">
+    <div class="day-title">📅 7月22日（三）— 東京迪士尼海洋 🐭</div>
+    <div class="timeline">
+
+      <div class="event">
+        <div class="card attraction">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">09:00</span>
+              <span class="type-icon">🌊</span>
+              <span class="card-title">東京迪士尼海洋</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill ticket" href="https://www.kkday.com/zh-tw/product/19252-tokyo-disney-resort-disneyland-disneysea" target="_blank" rel="noopener">🎟 KKday 票券</a>
+                <a class="link-pill ticket" href="https://www.klook.com/zh-TW/activity/695-tokyo-disney-resort-1-day-pass-tokyo/" target="_blank" rel="noopener">🎟 Klook 票券</a>
+              </div>
+              <div class="sub-section">
+                <div class="sub-label">重點設施</div>
+                ✨ Soaring: Fantastic Flight（翱翔：夢幻奇航）<br>✨ 空白魔法書
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== DAY 6 ===== -->
+  <div class="day-panel" id="day-5">
+    <div class="day-title">📅 7月23日（四）— 東京鐵塔 🗼</div>
+    <div class="timeline">
+
+      <div class="event">
+        <div class="card food">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">10:00</span>
+              <span class="type-icon">🥐</span>
+              <span class="card-title">早餐</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill" href="https://maps.app.goo.gl/XAGnip9aPA35VNv6A" target="_blank" rel="noopener">BURDIGALA TOKYO</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card attraction">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">11:00</span>
+              <span class="type-icon">🗼</span>
+              <span class="card-title">東京鐵塔</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill" href="https://www.google.com/maps?cid=5195627782660688349" target="_blank" rel="noopener">地圖</a>
+                <a class="link-pill ticket" href="https://www.klook.com/zh-TW/activity/4911-tokyo-tower-main-observatory-ticket-tokyo/" target="_blank" rel="noopener">🎟 Klook 票券</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card food">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">14:00</span>
+              <span class="type-icon">🍽️</span>
+              <span class="card-title">Tower Plaza</span>
+            </div>
+            <div class="card-body">
+              <a href="https://maps.app.goo.gl/F1DasFGPVUFafA13A" target="_blank" rel="noopener">📍 Tower Plaza 地圖</a>
+              <div class="link-list">
+                <a class="link-pill" href="https://www.google.com/maps?cid=15633199913133188681" target="_blank" rel="noopener">SHOGUN BURGER 1F</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/VNqSp5yCpxYaMuu49" target="_blank" rel="noopener">Pelican Cafe 1F</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/j5rGkufpG8puVCjX6" target="_blank" rel="noopener">%ARABICA 4F</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/vC1rJxFmKyqR78wH6" target="_blank" rel="noopener">Sky Room Cafe &amp; Bar 34F</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card food">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">16:00</span>
+              <span class="type-icon">☕</span>
+              <span class="card-title">Garden Plaza B</span>
+            </div>
+            <div class="card-body">
+              <a href="https://maps.app.goo.gl/U6FTMLtwQditShNT8" target="_blank" rel="noopener">📍 Garden Plaza B 地圖</a>
+              <div class="link-list">
+                <a class="link-pill" href="https://maps.app.goo.gl/fhGREzF7Axk5YSHH7" target="_blank" rel="noopener">中村藤吉 B1</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/HXLg1jRNyc3ftbcx9" target="_blank" rel="noopener">%ARABICA B1</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/vzxZ3qGmgGqFK3G79" target="_blank" rel="noopener">ÉCHIRÉ L'Atelier 1F</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card food">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">17:30</span>
+              <span class="type-icon">🍡</span>
+              <span class="card-title">Garden Plaza C</span>
+            </div>
+            <div class="card-body">
+              <a href="https://maps.app.goo.gl/mSMD4aMJrvAaehh26" target="_blank" rel="noopener">📍 Garden Plaza C 地圖</a>
+              <div class="link-list">
+                <a class="link-pill" href="https://maps.app.goo.gl/4Kf2d515DCt2RjC79" target="_blank" rel="noopener">鈴懸 B1</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/Ev6UHAoWQeBDNPzV9" target="_blank" rel="noopener">Comme'N KIDS B1</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== DAY 7 ===== -->
+  <div class="day-panel" id="day-6">
+    <div class="day-title">📅 7月24日（五）— 日本橋・最後採購</div>
+    <div class="timeline">
+
+      <div class="event">
+        <div class="card food">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">09:00</span>
+              <span class="type-icon">🍳</span>
+              <span class="card-title">早餐</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card shopping">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">10:30</span>
+              <span class="type-icon">🎁</span>
+              <span class="card-title">小倉山莊（日本橋高島屋 S.C.）</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill" href="https://maps.app.goo.gl/JgMyEroaCedB4ob47" target="_blank" rel="noopener">地圖</a>
+              </div>
+              <p class="note">營業時間：10:30 – 19:30</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card food">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">12:00</span>
+              <span class="type-icon">🍽️</span>
+              <span class="card-title">午餐</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card food">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">18:00</span>
+              <span class="type-icon">🍜</span>
+              <span class="card-title">晚餐：東京一番街拉麵區</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill" href="https://maps.app.goo.gl/kaHcK5QYSNUYgF4m7" target="_blank" rel="noopener">そらのいろ NIPPON #2</a>
+                <a class="link-pill" href="https://maps.app.goo.gl/ayXfS2Bqrw2ppJ756" target="_blank" rel="noopener">革新家 #7</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== DAY 8 ===== -->
+  <div class="day-panel" id="day-7">
+    <div class="day-title">📅 7月25日（六）— 回程 ✈️</div>
+    <div class="timeline">
+
+      <div class="event">
+        <div class="card transport">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">09:00</span>
+              <span class="type-icon">🚗</span>
+              <span class="card-title">機場包車接送</span>
+            </div>
+            <div class="card-body">
+              <div class="link-list">
+                <a class="link-pill ticket" href="https://www.kkday.com/zh-tw/product/174325-narita-haneda-airports-transfer-tokyo-attractions-disney-resorts-suburban-areas" target="_blank" rel="noopener">🎟 KKday 包車預訂</a>
+              </div>
+              <p class="note">前往成田機場 T2</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="card transport">
+          <div class="card-inner">
+            <div class="card-header">
+              <span class="time-badge">14:10</span>
+              <span class="type-icon">✈️</span>
+              <span class="card-title">回程航班 JX801</span>
+            </div>
+            <div class="card-body">
+              <div class="flight-row">
+                <span><span class="flight-city">東京成田 T2</span><br><span class="flight-time">14:10 起飛</span></span>
+                <span class="flight-arrow">→</span>
+                <span><span class="flight-city">台北松山 T1</span><br><span class="flight-time">16:50 抵達</span></span>
+                <span class="flight-num">JX801</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<script>
+  function showDay(index) {
+    document.querySelectorAll('.day-panel').forEach((p, i) => {
+      p.classList.toggle('active', i === index);
+    });
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+      b.classList.toggle('active', i === index);
+    });
+    // Scroll tabs into view
+    const activeTab = document.querySelectorAll('.tab-btn')[index];
+    activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
